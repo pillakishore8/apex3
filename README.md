@@ -1,1 +1,2 @@
-# apex3
+This project is a beginner-friendly web application that combines a Web Development Quiz and a Random Joke Generator. Users can answer multiple-choice questions, receive instant feedback on their answers, view their final score, and enjoy random jokes fetched from an external API. The application features a clean, responsive design and demonstrates core web development concepts such as DOM manipulation, event handling, conditional logic, and API integration using JavaScript.
+A responsive Web Development Quiz and Random Joke Generator built using HTML, CSS, and JavaScript. Features an interactive multiple-choice quiz with score tracking, answer validation, and a joke generator powered by a public API.
