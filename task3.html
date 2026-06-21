@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz and Joke Generator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#F1F5F9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px gray;
+    text-align:center;
+}
+
+h1{
+    color:#333;
+}
+
+button{
+    display:block;
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    cursor:pointer;
+    font-size:16px;
+    border-radius:5px;
+}
+
+.optionBtn{
+    background:#eeeeee;
+    border:none;
+    transition:0.3s;
+}
+
+.optionBtn:hover{
+    background:#dddddd;
+}
+
+.correct{
+    background:green !important;
+    color:white;
+}
+
+.wrong{
+    background:red !important;
+    color:white;
+}
+
+#nextBtn{
+    background:blue;
+    color:white;
+    border:none;
+}
+
+#nextBtn:disabled{
+    background:gray;
+    cursor:not-allowed;
+}
+
+@media(max-width:600px){
+
+    body{
+        padding:10px;
+    }
+
+    .container{
+        width:100%;
+        padding:15px;
+    }
+
+    h1{
+        font-size:24px;
+    }
+
+    button{
+        font-size:14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Quiz Section -->
+    <div id="quizPage">
+
+        <h1>Web Development Quiz</h1>
+
+        <h2 id="question"></h2>
+
+        <div id="answers"></div>
+
+        <button id="nextBtn">Next</button>
+
+    </div>
+
+    <!-- Result + Joke Section -->
+    <div id="jokePage" style="display:none;">
+
+        <h1>Quiz Completed 🎉</h1>
+
+        <h2 id="score"></h2>
+
+        <hr>
+
+        <h2>Random Joke Generator</h2>
+
+        <button onclick="getJoke()">Get Joke</button>
+
+        <p id="joke"></p>
+
+    </div>
+
+</div>
+
+<script>
+
+const quiz = [
+{
+    question: "What does HTML stand for?",
+    answers: [
+        "Hyper Text Markup Language",
+        "Home Tool Markup Language",
+        "Hyper Transfer Machine Language"
+    ],
+    correct: 0
+},
+{
+    question: "Which language is used for styling websites?",
+    answers: ["HTML", "CSS", "Java"],
+    correct: 1
+},
+{
+    question: "Which language adds interactivity to websites?",
+    answers: ["JavaScript", "CSS", "HTML"],
+    correct: 0
+},
+{
+    question: "Which HTML tag creates a paragraph?",
+    answers: ["<p>", "<h1>", "<img>"],
+    correct: 0
+},
+{
+    question: "Which CSS property changes text color?",
+    answers: ["background", "font-size", "color"],
+    correct: 2
+},
+{
+    question: "Which JavaScript function shows a popup message?",
+    answers: ["show()", "alert()", "print()"],
+    correct: 1
+}
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+showQuestion();
+
+function showQuestion() {
+
+    document.getElementById("question").innerText =
+        quiz[currentQuestion].question;
+
+    let answerBox =
+        document.getElementById("answers");
+
+    answerBox.innerHTML = "";
+
+    document.getElementById("nextBtn").disabled = true;
+
+    for(let i = 0; i < quiz[currentQuestion].answers.length; i++) {
+
+        let btn = document.createElement("button");
+
+        btn.innerText =
+            quiz[currentQuestion].answers[i];
+
+        btn.className = "optionBtn";
+
+        btn.onclick = function() {
+
+            let buttons =
+                answerBox.getElementsByTagName("button");
+
+            for(let j = 0; j < buttons.length; j++) {
+                buttons[j].disabled = true;
+            }
+
+            if(i === quiz[currentQuestion].correct) {
+
+                btn.classList.add("correct");
+                score++;
+
+            } else {
+
+                btn.classList.add("wrong");
+
+                buttons[quiz[currentQuestion].correct]
+                    .classList.add("correct");
+            }
+
+            document.getElementById("nextBtn").disabled = false;
+        };
+
+        answerBox.appendChild(btn);
+    }
+}
+
+document.getElementById("nextBtn").onclick = function() {
+
+    currentQuestion++;
+
+    if(currentQuestion < quiz.length) {
+
+        showQuestion();
+
+    } else {
+
+        document.getElementById("quizPage").style.display = "none";
+
+        document.getElementById("jokePage").style.display = "block";
+
+        document.getElementById("score").innerText =
+            "Your Score: " + score + " / " + quiz.length;
+    }
+};
+
+function getJoke() {
+
+    fetch("https://official-joke-api.appspot.com/random_joke")
+
+    .then(function(response) {
+        return response.json();
+    })
+
+    .then(function(data) {
+
+        document.getElementById("joke").innerHTML =
+            data.setup + "<br><br>" + data.punchline;
+
+    })
+
+    .catch(function() {
+
+        document.getElementById("joke").innerText =
+            "Failed to load joke.";
+
+    });
+}
+
+</script>
+
+</body>
+</html>
